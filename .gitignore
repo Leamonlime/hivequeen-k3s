@@ -1,3 +1,38 @@
+# --- Secrets: never commit ---
+.env
+*.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+secrets.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.pub
+
+# --- Kubernetes / cluster credentials: NEVER commit ---
+kubeconfig
+*.kubeconfig
+k3s.yaml
+*.kubeconfig.yaml
+*node-token*
+server-token*
+agent-token*
+# real manifests may carry live Secret data; only *.example.yaml is tracked
+manifests/*.yaml
+!manifests/*.example.yaml
+
+# --- Build / cache artifacts ---
+__pycache__/
+*.pyc
+*.bak
+*.tmp
+*.log
+
 # --- OS / editor ---
 .DS_Store
 .idea/

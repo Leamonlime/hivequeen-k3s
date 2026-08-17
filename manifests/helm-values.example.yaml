@@ -1,0 +1,35 @@
+# Sanitized Helm values for the Bitnami Postgres and Redis charts.
+# Passwords are NOT set here — let the chart generate them into a Secret, or point
+# at an existing Secret you created out-of-band. Never put real passwords in values.
+#
+# Install, e.g.:
+#   helm install myapp-postgres bitnami/postgresql -n myapp -f helm-values.example.yaml
+#   helm install myapp-redis    bitnami/redis      -n myapp -f helm-values.example.yaml
+
+# ---------- bitnami/postgresql ----------
+postgresql:
+  auth:
+    # Option A: let the chart generate and store the password in its Secret.
+    # Option B: reference a Secret you created yourself:
+    existingSecret: ""            # e.g. "myapp-postgresql"; leave "" to auto-generate
+    username: app
+    database: app
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: local-path    # k3s default provisioner
+
+# ---------- bitnami/redis ----------
+redis:
+  architecture: replication       # single master + replicas, as run on hivequeen
+  auth:
+    enabled: true
+    existingSecret: ""            # e.g. "myapp-redis"; leave "" to auto-generate
+  master:
+    persistence:
+      enabled: true
+      size: 2Gi
+      storageClass: local-path
+  replica:
+    replicaCount: 3

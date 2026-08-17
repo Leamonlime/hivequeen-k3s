@@ -1,0 +1,6 @@
+# One namespace per application keeps workloads, secrets, and RBAC isolated.
+# Replace `myapp` throughout with your application name.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: myapp
