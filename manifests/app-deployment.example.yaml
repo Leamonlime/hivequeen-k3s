@@ -1,0 +1,66 @@
+# Generic application deployment + service.
+# Every credential is pulled from a Secret via secretKeyRef — there are NO inline
+# secret values here. This is the pattern every app on the cluster follows.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          # Locally-built image loaded into containerd; no external registry pull.
+          image: docker.io/library/myapp:latest
+          imagePullPolicy: Never
+          env:
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-secrets
+                  key: api-key
+            - name: BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-secrets
+                  key: bot-token
+            # DB password comes from the Bitnami chart's own generated Secret.
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-postgresql
+                  key: postgres-password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-redis
+                  key: redis-password
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: myapp
+spec:
+  selector:
+    app: myapp
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
