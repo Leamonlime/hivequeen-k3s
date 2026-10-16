@@ -69,3 +69,7 @@ anywhere in the history.
 
 Live, core services running since mid-2026. Hardware and reliability upgrades
 (UPS/NUT, faster storage) planned.
+
+## License
+
+[MIT](LICENSE)
